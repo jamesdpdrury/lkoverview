@@ -326,12 +326,12 @@ Papa.parse(SHEET_URL, {
       let detailsHTML = "";
       if (item.row[7]) detailsHTML += `<div class="top-note">${item.row[7]}</div>`;
 
-      Object.keys(SECTION_MAP).forEach(col => {
-        const value = item.row[col];
-        if (value) {
-          detailsHTML += splitLinesToBoxes(value, col, SECTION_MAP[col].id);
-        }
-      });
+      [6,5,2,3,4,1].forEach(col => {
+  const value = item.row[col];
+  if (value) {
+    detailsHTML += splitLinesToBoxes(value, col, SECTION_MAP[col].id);
+  }
+});
 
       const dayDiv = document.createElement("div");
       dayDiv.className = "day" + (hasData ? " has-data" : "");
