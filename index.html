@@ -112,6 +112,7 @@
   .day.today {
     background: #fcefb8;
     border: 3px solid #660000;
+    animation: pulse 2s infinite;
   }
 
   .day.past {
@@ -133,13 +134,25 @@
     border-radius: 6px;
   }
 
+  /* Section boxes for each line */
   .section {
     margin-top: 5px;
     border-radius: 8px;
     padding: 6px 8px;
     color: white;
+    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+    overflow: hidden;
   }
 
+  /* Collapse animation for toggles */
+  .section.collapsed {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0 8px;
+  }
+
+  /* Section colors */
   #General { background-color: #ff7a00; }
   #Associate { background-color: #0077ff; }
   #Auditions { background-color: #28a745; }
@@ -151,31 +164,26 @@
     font-size: 14px;
     white-space: pre-wrap;
     margin: 0;
-    padding-left: 12px;
-  }
-
-  .section-content p {
-    margin: 0;
-  }
-
-  .section-content p::before {
-    content: "• ";
-    margin-right: 2px;
-    margin-left: -10px;
   }
 
   .empty {
     visibility: hidden;
   }
 
+  /* Pulse animation for today */
+  @keyframes pulse {
+    0% { box-shadow: 0 0 8px rgba(102,0,0,0.6); }
+    50% { box-shadow: 0 0 16px rgba(102,0,0,0.8); }
+    100% { box-shadow: 0 0 8px rgba(102,0,0,0.6); }
+  }
+
   @media (max-width: 768px) {
     .calendar {
       grid-template-columns: 1fr;
     }
-    #header h1 {font-size: 20px;}
-    #toggles {
-      gap: 6px;
-    }
+    #header h1 { font-size: 20px; }
+    #toggles { gap: 6px; }
+    .month h2 {top:140px}
   }
 </style>
 </head>
@@ -225,11 +233,15 @@ function parseDate(value) {
   return isNaN(d) ? null : d;
 }
 
-function prefixLines(value, col) {
+// Convert each line into its own colored box
+function splitLinesToBoxes(value, col, sectionId) {
   if (!value) return '';
-  const lines = value.split("\n");
-  if (col == 7) return lines.join("\n");
-  return lines.map(line => `<p>${line}</p>`).join("\n");
+  const lines = value.split("\n").filter(line => line.trim() !== "");
+  return lines.map(line => 
+    `<div class="section" id="${sectionId}">
+       <div class="section-content">${line}</div>
+     </div>`
+  ).join('');
 }
 
 Papa.parse(SHEET_URL, {
@@ -279,23 +291,19 @@ Papa.parse(SHEET_URL, {
       Object.keys(SECTION_MAP).forEach(col => { if (item.row[col]) hasData = true; });
 
       let detailsHTML = "";
-      if (item.row[7]) detailsHTML += `<div class="top-note">${prefixLines(item.row[7], 7)}</div>`;
+      if (item.row[7]) detailsHTML += `<div class="top-note">${item.row[7]}</div>`;
 
       Object.keys(SECTION_MAP).forEach(col => {
         const value = item.row[col];
         if (value) {
-          detailsHTML += `<div class="section" id="${SECTION_MAP[col].id}">
-            <div class="section-content">${prefixLines(value, col)}</div>
-          </div>`;
+          detailsHTML += splitLinesToBoxes(value, col, SECTION_MAP[col].id);
         }
       });
 
       const dayDiv = document.createElement("div");
       dayDiv.className = "day" + (hasData ? " has-data" : "");
-      if (item.date.getTime() === today.getTime()) {
-        dayDiv.classList.add("today");
-        todayElement = dayDiv;
-      } else if (item.date < today) dayDiv.classList.add("past");
+      if (item.date.getTime() === today.getTime()) todayElement = dayDiv;
+      else if (item.date < today) dayDiv.classList.add("past");
 
       const weekday = item.date.toLocaleDateString(undefined, { weekday: "long" }).toUpperCase();
       const dayNum = getOrdinal(item.date.getDate());
@@ -309,7 +317,8 @@ Papa.parse(SHEET_URL, {
       toggle.addEventListener('change', e => {
         const id = e.target.dataset.section;
         document.querySelectorAll(`#${id}`).forEach(sec => {
-          sec.style.display = e.target.checked ? 'block' : 'none';
+          if(e.target.checked) sec.classList.remove('collapsed');
+          else sec.classList.add('collapsed');
         });
       });
     });
