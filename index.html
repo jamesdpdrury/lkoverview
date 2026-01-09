@@ -15,7 +15,7 @@
     margin: 0;
   }
 
-  /* Fixed header with title and toggles */
+  /* Fixed header with title and dropdown */
   #header {
     position: fixed;
     top: 0;
@@ -34,12 +34,40 @@
     text-transform: uppercase;
   }
 
+  #toggles-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  #funnel-btn {
+    background: #660000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
   #toggles {
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    margin-bottom: 0;
     justify-content: center;
+    margin-top: 8px;
+    position: absolute;
+    left: 0;
+    top: 40px;
+    background: #fed004;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+    width: 400px;
+  }
+
+  #toggles.hidden {
+    display: none;
   }
 
   #toggles label {
@@ -63,9 +91,8 @@
   input[data-section="Marketing"] + span { color: #dc3545; }
   input[data-section="Operational"] + span { color: #434343; }
 
-  /* Body padding so header doesn't cover content */
   #content {
-    padding-top: 120px;
+    padding-top: 140px; /* account for header + dropdown */
     padding-left: 20px;
     padding-right: 20px;
   }
@@ -74,12 +101,11 @@
     margin-top: 40px;
   }
 
-  /* Sticky month headers */
   .month h2 {
     margin-bottom: 12px;
     color: #ffffff;
     position: sticky;
-    top: 100px; /* below fixed menu */
+    top: 100px;
     background: #000000;
     padding: 5px 0;
     z-index: 500;
@@ -134,7 +160,6 @@
     border-radius: 6px;
   }
 
-  /* Section boxes for each line */
   .section {
     margin-top: 5px;
     border-radius: 8px;
@@ -144,7 +169,6 @@
     overflow: hidden;
   }
 
-  /* Collapse animation for toggles */
   .section.collapsed {
     max-height: 0;
     opacity: 0;
@@ -152,7 +176,6 @@
     padding: 0 8px;
   }
 
-  /* Section colors */
   #General { background-color: #ff7a00; }
   #Associate { background-color: #0077ff; }
   #Auditions { background-color: #28a745; }
@@ -170,7 +193,6 @@
     visibility: hidden;
   }
 
-  /* Pulse animation for today */
   @keyframes pulse {
     0% { box-shadow: 0 0 8px rgba(102,0,0,0.6); }
     50% { box-shadow: 0 0 16px rgba(102,0,0,0.8); }
@@ -178,12 +200,15 @@
   }
 
   @media (max-width: 768px) {
-    .calendar {
-      grid-template-columns: 1fr;
-    }
+    .calendar { grid-template-columns: 1fr; }
     #header h1 { font-size: 20px; }
-    #toggles { gap: 6px; }
-    .month h2 {top:110px}
+    #toggles {
+      flex-direction: column;
+      gap: 6px;
+      top: 38px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
   }
 </style>
 </head>
@@ -191,13 +216,16 @@
 
 <div id="header">
   <h1>Lion King London - Master Overview</h1>
-  <div id="toggles">
-    <label><input type="checkbox" class="section-toggle" data-section="General" checked> <span>General</span></label>
-    <label><input type="checkbox" class="section-toggle" data-section="Associate" checked> <span>Associate Visits</span></label>
-    <label><input type="checkbox" class="section-toggle" data-section="Auditions" checked> <span>Auditions</span></label>
-    <label><input type="checkbox" class="section-toggle" data-section="Fittings" checked> <span>Fittings</span></label>
-    <label><input type="checkbox" class="section-toggle" data-section="Marketing" checked> <span>Marketing</span></label>
-    <label><input type="checkbox" class="section-toggle" data-section="Operational" checked> <span>Operational</span></label>
+  <div id="toggles-container">
+    <button id="funnel-btn">Funnel Items ▼</button>
+    <div id="toggles" class="hidden">
+      <label><input type="checkbox" class="section-toggle" data-section="General" checked> <span>General</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Associate" checked> <span>Associate Visits</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Auditions" checked> <span>Auditions / Rehearsals / Put-Ins / Casting</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Fittings" checked> <span>Fittings / Head Pulls / Onboarding</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Marketing" checked> <span>Marketing Events / Press / Social Media</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Operational" checked> <span>Operational / Venue / Maintenance</span></label>
+    </div>
   </div>
 </div>
 
@@ -233,7 +261,6 @@ function parseDate(value) {
   return isNaN(d) ? null : d;
 }
 
-// Convert each line into its own colored box
 function splitLinesToBoxes(value, col, sectionId) {
   if (!value) return '';
   const lines = value.split("\n").filter(line => line.trim() !== "");
@@ -312,7 +339,7 @@ Papa.parse(SHEET_URL, {
       calendar.appendChild(dayDiv);
     });
 
-    // Toggle buttons
+    // Section toggles
     document.querySelectorAll('.section-toggle').forEach(toggle => {
       toggle.addEventListener('change', e => {
         const id = e.target.dataset.section;
@@ -332,6 +359,14 @@ Papa.parse(SHEET_URL, {
       window.scrollTo({ top: topOffset, behavior: 'smooth' });
     }
   }
+});
+
+// Funnel dropdown toggle
+const funnelBtn = document.getElementById('funnel-btn');
+const togglesDiv = document.getElementById('toggles');
+
+funnelBtn.addEventListener('click', () => {
+  togglesDiv.classList.toggle('hidden');
 });
 </script>
 
