@@ -4,233 +4,235 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lion King London - Master Overview</title>
- <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
-<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-<link rel="shortcut icon" href="/favicon.ico" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="LKL - Master Overview" />
-<link rel="manifest" href="/site.webmanifest" />
+
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: #f6f6f6;
-    margin: 0;
-  }
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f6f6f6;
+  margin: 0;
+}
 
-  /* Fixed header with title and dropdown */
-  #header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: calc(100% - 40px);
-    background: #fed004;
-    z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    padding: 10px 20px;
-    text-align: center;
-  }
+/* ================= HEADER ================= */
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: calc(100% - 40px);
+  background: #fed004;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 10px 20px;
+  text-align: center;
+}
 
-  #header h1 {
-    margin: 0 0 10px 0;
-    color: #660000;
-    text-transform: uppercase;
-  }
+#header h1 {
+  margin: 0;
+  color: #660000;
+  text-transform: uppercase;
+}
 
-  #toggles-container {
-    position: relative;
-    display: inline-block;
-  }
+#last-updated {
+  font-size: 13px;
+  font-weight: 500;
+  color: #660000;
+  opacity: 0.85;
+  margin: 4px 0 8px;
+}
 
-  #funnel-btn {
-    background: #660000;
-    color: #fff;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-  }
+/* ================= FUNNEL DROPDOWN ================= */
+#toggles-container {
+  position: relative;
+  display: inline-block;
+}
 
-  #toggles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 8px;
-    position: absolute;
-    left: 0;
-    top: 40px;
-    background: #fed004;
-    padding: 10px 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    z-index: 1000;
-    width: 400px;
-  }
+#funnel-btn {
+  background: #660000;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  text-transform: uppercase;
+}
 
-  #toggles.hidden {
+#toggles {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fed004;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  z-index: 1001;
+  width: 360px;
+  justify-content: center;
+}
+
+#toggles.hidden {
+  display: none;
+}
+
+#toggles label {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+#toggles input {
+  margin-right: 5px;
+}
+
+/* Toggle colours */
+input[data-section="General"] + span { color: #ff7a00; }
+input[data-section="Associate"] + span { color: #0077ff; }
+input[data-section="Auditions"] + span { color: #28a745; }
+input[data-section="Fittings"] + span { color: #6f42c1; }
+input[data-section="Marketing"] + span { color: #dc3545; }
+input[data-section="Operational"] + span { color: #434343; }
+
+/* ================= CONTENT ================= */
+#content {
+  padding-top: 170px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.month {
+  margin-top: 40px;
+}
+
+.month h2 {
+  position: sticky;
+  top: 125px;
+  background: #000;
+  color: white;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 6px 0;
+  z-index: 500;
+}
+
+/* ================= CALENDAR ================= */
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+}
+
+.day {
+  background: white;
+  border-radius: 14px;
+  padding: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+
+.day.has-data {
+  border: 3px solid #660000;
+}
+
+.day.today {
+  background: #fcefb8;
+  border: 3px solid #660000;
+}
+
+.day.past {
+  opacity: 0.5;
+}
+
+.date {
+  font-weight: 600;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+/* ================= COLUMN H (TOP NOTES) ================= */
+.top-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.top-notes.placeholder {
+  min-height: 28px; /* matches one row of pills */
+}
+
+.top-note {
+  background: #fecf03;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 500;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* ================= SECTIONS ================= */
+.section {
+  margin-top: 5px;
+  border-radius: 8px;
+  padding: 6px 8px;
+  color: white;
+  font-size: 14px;
+}
+
+.section.collapsed {
+  display: none;
+}
+
+/* Section colours */
+#General { background: #ff7a00; }
+#Associate { background: #0077ff; }
+#Auditions { background: #28a745; }
+#Fittings { background: #6f42c1; }
+#Marketing { background: #dc3545; }
+#Operational { background: #434343; }
+
+.empty {
+  visibility: hidden;
+}
+
+/* ================= MOBILE ================= */
+@media (max-width: 768px) {
+  .calendar {
+    grid-template-columns: 1fr;
+  }
+  .empty {
     display: none;
   }
-
-  #toggles label {
-    display: flex;
-    align-items: center;
-    font-weight: 500;
-    cursor: pointer;
+  #header h1 {
+    font-size: 20px;
+    line-height: 1.2;
   }
-
-  #toggles input[type="checkbox"] {
-    margin-right: 5px;
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-  }
-
-  input[data-section="General"] + span { color: #ff7a00; }
-  input[data-section="Associate"] + span { color: #0077ff; }
-  input[data-section="Auditions"] + span { color: #28a745; }
-  input[data-section="Fittings"] + span { color: #6f42c1; }
-  input[data-section="Marketing"] + span { color: #dc3545; }
-  input[data-section="Operational"] + span { color: #434343; }
-
-  #content {
-    padding-top: 140px; /* account for header + dropdown */
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .month {
-    margin-top: 40px;
-  }
-
-  .month h2 {
-    margin-bottom: 12px;
-    color: #ffffff;
-    position: sticky;
-    top: 100px;
-    background: #000000;
-    padding: 5px 0;
-    z-index: 500;
-    border-bottom: 1px solid #ddd;
-    text-align: center;
-    text-transform: uppercase;
-  }
-
-  .calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 14px;
-  }
-
-  .day {
-    background: white;
-    border-radius: 14px;
-    padding: 12px;
-    min-height: 110px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    max-height: 700px;
-    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-  }
-
-  .day.has-data {
-    border: 3px solid #660000;
-  }
-
-  .day.today {
-    background: #fcefb8;
-    border: 3px solid #660000;
-    animation: pulse 2s infinite;
-  }
-
-  .day.past {
-    opacity: 0.5;
-  }
-
-  .date {
-    font-weight: 600;
-    margin-bottom: 6px;
-    text-transform: uppercase;
-  }
-
-  .top-note {
-    font-weight: 500;
-    margin-bottom: 8px;
-    background-color: #fecf03;
-    width: fit-content;
-    padding: 2px 5px;
-    border-radius: 6px;
-  }
-
-  .section {
-    margin-top: 5px;
-    border-radius: 8px;
-    padding: 6px 8px;
-    color: white;
-    transition: max-height 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
-    overflow: hidden;
-  }
-
-  .section.collapsed {
-    max-height: 0;
-    opacity: 0;
-    margin: 0;
-    padding: 0 8px;
-  }
-
-  #General { background-color: #ff7a00; }
-  #Associate { background-color: #0077ff; }
-  #Auditions { background-color: #28a745; }
-  #Fittings { background-color: #6f42c1; }
-  #Marketing { background-color: #dc3545; }
-  #Operational { background-color: #434343; }
-
-  .section-content {
-    font-size: 14px;
-    white-space: pre-wrap;
-    margin: 0;
-  }
-
-  .empty {
-    visibility: hidden;
-  }
-
-  @keyframes pulse {
-    0% { box-shadow: 0 0 8px rgba(102,0,0,0.6); }
-    50% { box-shadow: 0 0 16px rgba(102,0,0,0.8); }
-    100% { box-shadow: 0 0 8px rgba(102,0,0,0.6); }
-  }
-
-  @media (max-width: 768px) {
-    .calendar { grid-template-columns: 1fr; }
-    #header h1 { font-size: 17px; }
-    #toggles {
-      flex-direction: column;
-      gap: 6px;
-      top: 38px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-    .month h2 {top: 83px;}
-  }
+  .top-notes.placeholder {
+  min-height: 0; /* matches one row of pills */
+}
+}
 </style>
 </head>
 <body>
 
 <div id="header">
   <h1>Lion King London - Master Overview</h1>
+  <div id="last-updated"></div>
+
   <div id="toggles-container">
     <button id="funnel-btn">Funnel Items ▼</button>
     <div id="toggles" class="hidden">
-      <label><input type="checkbox" class="section-toggle" data-section="General" checked> <span>General</span></label>
-      <label><input type="checkbox" class="section-toggle" data-section="Associate" checked> <span>Associate Visits</span></label>
-      <label><input type="checkbox" class="section-toggle" data-section="Auditions" checked> <span>Auditions / Rehearsals / Put-Ins / Casting</span></label>
-      <label><input type="checkbox" class="section-toggle" data-section="Fittings" checked> <span>Fittings / Head Pulls / Onboarding</span></label>
-      <label><input type="checkbox" class="section-toggle" data-section="Marketing" checked> <span>Marketing Events / Press / Social Media</span></label>
-      <label><input type="checkbox" class="section-toggle" data-section="Operational" checked> <span>Operational / Venue / Maintenance</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Associate" checked><span>Associate Visits</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="General" checked><span>General</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Auditions" checked><span>Auditions / Rehearsals / Put Ins / Casting</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Fittings" checked><span>Fittings / Head Pulls / Onboarding</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Marketing" checked><span>Marketing Events / Press / Social Media</span></label>
+      <label><input type="checkbox" class="section-toggle" data-section="Operational" checked><span>Operational / Venue / Maintenance</span></label>
     </div>
   </div>
 </div>
@@ -240,16 +242,17 @@
 </div>
 
 <script>
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTMDvB8kywSPPVGastAuRAoTEXziTCcfG-2wD2AJ7dUuYGreBjhGT8iawSsIyc4jTW6gUef0vvLh-X/pub?gid=906067235&single=true&output=csv";
+const SHEET_URL =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vQTMDvB8kywSPPVGastAuRAoTEXziTCcfG-2wD2AJ7dUuYGreBjhGT8iawSsIyc4jTW6gUef0vvLh-X/pub?gid=906067235&single=true&output=csv";
 
-const SECTION_MAP = {
-  6: { id: "Associate" },
-  1: { id: "General" },
-  2: { id: "Auditions" },
-  3: { id: "Fittings" },
-  4: { id: "Marketing" },
-  5: { id: "Operational" }
-};
+const SECTION_ORDER = [
+  { col: 6, id: "Associate" },
+  { col: 1, id: "General" },
+  { col: 2, id: "Auditions" },
+  { col: 3, id: "Fittings" },
+  { col: 4, id: "Marketing" },
+  { col: 5, id: "Operational" }
+];
 
 function getOrdinal(n) {
   if (n > 3 && n < 21) return n + 'th';
@@ -261,119 +264,108 @@ function getOrdinal(n) {
   }
 }
 
-function parseDate(value) {
-  if (!value) return null;
-  const d = new Date(value);
-  return isNaN(d) ? null : d;
-}
-
-function splitLinesToBoxes(value, col, sectionId) {
-  if (!value) return '';
-  const lines = value.split("\n").filter(line => line.trim() !== "");
-  return lines.map(line => 
-    `<div class="section" id="${sectionId}">
-       <div class="section-content">${line}</div>
-     </div>`
-  ).join('');
-}
-
 Papa.parse(SHEET_URL, {
   download: true,
-  header: false,
-  skipEmptyLines: true,
-  complete: function(results) {
+  complete(results) {
     const rows = results.data;
+
+    /* Last updated from I1 */
+    if (rows[0]?.[8]) {
+      document.getElementById("last-updated").textContent = rows[0][8];
+    }
+
     const today = new Date();
     today.setHours(0,0,0,0);
     const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    const validDays = [];
+    const output = document.getElementById("output");
+    let currentMonth = "";
+    let calendar;
+    let todayEl = null;
 
     rows.slice(3).forEach(row => {
-      const date = parseDate(row[0]);
-      if (!date) return;
+      const date = new Date(row[0]);
+      if (isNaN(date) || date < firstOfMonth) return;
       date.setHours(0,0,0,0);
-      if (date >= firstOfMonth) validDays.push({ date, row });
-    });
 
-    const output = document.getElementById("output");
-    let currentMonthLabel = "";
-    let calendar;
-    let todayElement = null;
+      const monthLabel = date.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+      if (monthLabel !== currentMonth) {
+        currentMonth = monthLabel;
+        const m = document.createElement("div");
+        m.className = "month";
+        m.innerHTML = `<h2>${monthLabel}</h2><div class="calendar"></div>`;
+        output.appendChild(m);
+        calendar = m.querySelector(".calendar");
 
-    validDays.forEach(item => {
-      const monthLabel = item.date.toLocaleDateString(undefined, { month: "long", year: "numeric" });
-
-      if (monthLabel !== currentMonthLabel) {
-        currentMonthLabel = monthLabel;
-        const monthDiv = document.createElement("div");
-        monthDiv.className = "month";
-        monthDiv.innerHTML = `<h2>${monthLabel}</h2><div class="calendar"></div>`;
-        output.appendChild(monthDiv);
-        calendar = monthDiv.querySelector(".calendar");
-
-        const dayOfWeek = (item.date.getDay() + 6) % 7;
-        for (let i = 0; i < dayOfWeek; i++) {
-          const empty = document.createElement("div");
-          empty.className = "day empty";
-          calendar.appendChild(empty);
+        const offset = (date.getDay() + 6) % 7;
+        for (let i=0;i<offset;i++) {
+          calendar.appendChild(Object.assign(document.createElement("div"),{className:"day empty"}));
         }
       }
 
+      const day = document.createElement("div");
+      day.className = "day";
+
       let hasData = false;
-      Object.keys(SECTION_MAP).forEach(col => { if (item.row[col]) hasData = true; });
+      let details = "";
 
-      let detailsHTML = "";
-      if (item.row[7]) detailsHTML += `<div class="top-note">${item.row[7]}</div>`;
+      /* Column H – horizontal pills */
+      if (row[7]) {
+  const notes = row[7].split("\n").filter(n => n.trim());
+  details += `<div class="top-notes">`;
+  notes.forEach(note => {
+    details += `<div class="top-note">${note}</div>`;
+  });
+  details += `</div>`;
+} else {
+  // Empty placeholder to keep alignment consistent
+  details += `<div class="top-notes placeholder"></div>`;
+}
 
-      [6,5,2,3,4,1].forEach(col => {
-  const value = item.row[col];
-  if (value) {
-    detailsHTML += splitLinesToBoxes(value, col, SECTION_MAP[col].id);
-  }
-});
+      SECTION_ORDER.forEach(sec => {
+        if (row[sec.col]) {
+          hasData = true;
+          row[sec.col].split("\n").forEach(line => {
+            if (line.trim()) {
+              details += `<div class="section" id="${sec.id}">${line}</div>`;
+            }
+          });
+        }
+      });
 
-      const dayDiv = document.createElement("div");
-      dayDiv.className = "day" + (hasData ? " has-data" : "");
-      if (item.date.getTime() === today.getTime()) todayElement = dayDiv;
-      else if (item.date < today) dayDiv.classList.add("past");
+      if (hasData) day.classList.add("has-data");
+      if (+date === +today) { day.classList.add("today"); todayEl = day; }
+      if (date < today) day.classList.add("past");
 
-      const weekday = item.date.toLocaleDateString(undefined, { weekday: "long" }).toUpperCase();
-      const dayNum = getOrdinal(item.date.getDate());
+      const label =
+        `${date.toLocaleDateString(undefined,{weekday:'long'}).toUpperCase()} ${getOrdinal(date.getDate())}`;
 
-      dayDiv.innerHTML = `<div class="date">${weekday} ${dayNum}</div><div class="details">${detailsHTML}</div>`;
-      calendar.appendChild(dayDiv);
+      day.innerHTML = `<div class="date">${label}</div>${details}`;
+      calendar.appendChild(day);
     });
 
-    // Section toggles
-    document.querySelectorAll('.section-toggle').forEach(toggle => {
-      toggle.addEventListener('change', e => {
-        const id = e.target.dataset.section;
-        document.querySelectorAll(`#${id}`).forEach(sec => {
-          if(e.target.checked) sec.classList.remove('collapsed');
-          else sec.classList.add('collapsed');
-        });
+    /* Toggle logic */
+    document.querySelectorAll(".section-toggle").forEach(t => {
+      t.addEventListener("change", e => {
+        document.querySelectorAll(`#${e.target.dataset.section}`)
+          .forEach(el => el.classList.toggle("collapsed", !e.target.checked));
       });
     });
 
-    // Auto-scroll to today
-    if (todayElement) {
-      const headerHeight = document.getElementById('header').offsetHeight;
-      const monthHeader = todayElement.closest('.month').querySelector('h2');
-      const monthOffset = monthHeader.offsetHeight;
-      const topOffset = todayElement.getBoundingClientRect().top + window.scrollY - headerHeight - monthOffset - 10;
-      window.scrollTo({ top: topOffset, behavior: 'smooth' });
+    /* Scroll to today */
+    if (todayEl) {
+      const offset = document.getElementById("header").offsetHeight + 40;
+      window.scrollTo({
+        top: todayEl.getBoundingClientRect().top + window.scrollY - offset,
+        behavior:"smooth"
+      });
     }
   }
 });
 
-// Funnel dropdown toggle
-const funnelBtn = document.getElementById('funnel-btn');
-const togglesDiv = document.getElementById('toggles');
-
-funnelBtn.addEventListener('click', () => {
-  togglesDiv.classList.toggle('hidden');
-});
+/* Funnel dropdown */
+document.getElementById("funnel-btn").onclick = () =>
+  document.getElementById("toggles").classList.toggle("hidden");
 </script>
 
 </body>
