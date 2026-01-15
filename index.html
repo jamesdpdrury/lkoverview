@@ -219,6 +219,18 @@ input[data-section="Operational"] + span { color:#434343; }
   pointer-events: auto;
 }
 
+/* ================= FOOTER ================= */
+#footer {
+  margin-top: 60px;
+  padding: 20px 10px;
+  text-align: center;
+  font-size: 13px;
+  color: #660000;
+  background: #fed004;
+  font-family: 'Poppins', sans-serif;
+  opacity: 0.85;
+}
+
 /* ================= MOBILE ================= */
 @media (max-width:768px){
   .calendar{grid-template-columns:1fr;}
@@ -254,7 +266,9 @@ input[data-section="Operational"] + span { color:#434343; }
 
 <div id="content"><div id="output"></div></div>
 <button id="jump-today">Jump to Today</button>
-
+<footer id="footer">
+  © <span id="footer-year"></span> James Drury — Version 1.0
+</footer>
 <script>
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQTMDvB8kywSPPVGastAuRAoTEXziTCcfG-2wD2AJ7dUuYGreBjhGT8iawSsIyc4jTW6gUef0vvLh-X/pub?gid=906067235&single=true&output=csv";
 
@@ -390,9 +404,11 @@ Papa.parse(SHEET_URL,{
     });
   }
 });
+document.getElementById("footer-year").textContent = new Date().getFullYear();
 
 /* Funnel */
 document.getElementById("funnel-btn").onclick=()=>document.getElementById("toggles").classList.toggle("hidden");
 </script>
+
 </body>
 </html>
